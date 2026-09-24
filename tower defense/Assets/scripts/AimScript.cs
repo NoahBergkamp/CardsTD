@@ -1,54 +1,107 @@
-using System;
-using Unity.Mathematics;
-using UnityEditor.Animations;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations;
 
 public class AimScript : MonoBehaviour
 {
-    public Transform target;
+    [SerializeField]
+    private List<GameObject> targets = new List<GameObject>();
+
     public GameObject bullet;
     public Transform shootPoint;
-    public float tarPos;
-    private float range = 5;
 
-    
-    public float AttackSpeed;
-
+    private float AttackSpeed;
+    private GameObject CurrentTarget;
 
     void Start()
     {
-        AttackSpeed = 0.5f; 
-    }
-    void Update()
-    {
-        rangeChecker();
-       
+        AttackSpeed = 0.1f;
     }
 
-    void rangeChecker()
+    void Update()
     {
-        tarPos = Vector3.Distance(target.transform.position, transform.position);
-        if(tarPos < 5)
+        targetEnemy();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Enemy"))
         {
-            targetEnemy();
+            if (!targets.Contains(other.gameObject))
+            {
+                targets.Add(other.gameObject);
+            }
         }
     }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            targets.Remove(other.gameObject);
+
+            if (CurrentTarget == other.gameObject)
+            {
+                CurrentTarget = null;
+            }
+        }
+    }
+
     void targetEnemy()
     {
-        Vector3 aimDir = (target.transform.position - transform.position).normalized ;
+        targets.RemoveAll(target => target == null);
+
+        // No targets
+        if (targets.Count == 0)
+        {
+            CurrentTarget = null;
+            return;
+        }
+        float currentLowest = Mathf.Infinity;
+        GameObject bestTarget = null;
+
+        foreach (GameObject target in targets)
+        {
+            TrackFollower trackFollower = target.GetComponent<TrackFollower>();
+
+            if (trackFollower == null)
+                continue;
+
+            float inTime = trackFollower.ReturnTime();
+
+            if (inTime < currentLowest)
+            {
+                currentLowest = inTime;
+                bestTarget = target;
+            }
+        }
+
+        if (bestTarget == null)
+        {
+            CurrentTarget = null;
+            return;
+        }
+
+        // Set current target
+        CurrentTarget = bestTarget;
+
+        // Aim at target
+        Vector3 aimDir = (CurrentTarget.transform.position - transform.position).normalized;
+
         Quaternion rot = Quaternion.LookRotation(Vector3.forward, aimDir);
         transform.rotation = rot;
+
+        // Shooting timer
         AttackSpeed -= Time.deltaTime;
 
         if (AttackSpeed <= 0)
         {
-            AttackSpeed = 4;
-            
-            Instantiate(bullet, shootPoint.transform.position, transform.rotation);
+            AttackSpeed = 0.1f;
 
+            Instantiate(
+                bullet,
+                shootPoint.position,
+                transform.rotation
+            );
         }
-
     }
 }
- 

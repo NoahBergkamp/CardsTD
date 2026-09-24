@@ -1,0 +1,55 @@
+{
+    "version": 1,
+    "name": "TowerInputActions",
+    "maps": [
+        {
+            "name": "New action map",
+            "id": "b74fcf82-a872-4507-8baa-1065380de2fd",
+            "actions": [
+                {
+                    "name": "point",
+                    "type": "Value",
+                    "id": "d8b7ad98-e3a8-4ec1-8b80-6aa6cfdc1486",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Press",
+                    "type": "Button",
+                    "id": "19b2d04e-de8b-4275-b07e-ca6ec12505ff",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "694cf236-2672-4286-a9b9-210811d67fa7",
+                    "path": "<Pointer>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eccd2f66-8ac9-4a88-9b97-285ebab706f5",
+                    "path": "<Pointer>/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Press",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

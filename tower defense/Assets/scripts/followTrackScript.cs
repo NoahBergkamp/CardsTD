@@ -14,11 +14,18 @@ public class TrackFollower : MonoBehaviour
 
     [Header("Movement")]
     public float speed = 5f;
+    public float speedMult = 5f;
+    public float BaseSpeed;
     public float reachDistance = 0.1f;
 
     private Rigidbody2D rb;
     private Transform[] waypoints;
     private int currentPoint = 1;
+    private float timer = 0.0f;
+
+    [Header("TrackProgress")]
+    [SerializeField]  private float MaxTrackLenght = 9;
+    [SerializeField] private float TrackProgress;
 
 
 
@@ -34,7 +41,7 @@ public class TrackFollower : MonoBehaviour
     }
     void Start()
     {
-        
+        BaseSpeed = speed/speedMult;
         
         rb = GetComponent<Rigidbody2D>();
 
@@ -45,7 +52,14 @@ public class TrackFollower : MonoBehaviour
 
 
 
-    void FixedUpdate()
+    void Update()
+    {
+        TrackProgressMeter();
+        FollowTrack();
+
+    }
+
+    void FollowTrack()
     {
         if (currentPoint >= waypoints.Length)
         {
@@ -58,7 +72,7 @@ public class TrackFollower : MonoBehaviour
 
         rb.linearVelocity = direction * speed;
 
-        // Rotate sprite to face movement direction
+
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
         rb.rotation = angle;
 
@@ -67,4 +81,14 @@ public class TrackFollower : MonoBehaviour
             currentPoint++;
         }
     }
+
+    void TrackProgressMeter()
+    {
+        float timeTillEnd = MaxTrackLenght / BaseSpeed;
+        timer += Time.deltaTime;
+        TrackProgress =  MaxTrackLenght - timer;
+    }
+
+    public float ReturnTime() => TrackProgress; 
+
 }

@@ -4,13 +4,13 @@ using UnityEngine.InputSystem;
 
 public class FastTurretButton : MonoBehaviour
 {
-    public GameObject basicTurret;
+    public GameObject Turret;
     private Transform mousePos;
 
     
     public void TowerPlacement()
     {
-        Instantiate(basicTurret);
+        Instantiate(Turret);
     }
 
 }

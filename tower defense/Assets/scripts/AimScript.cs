@@ -9,27 +9,23 @@ public class AimScript : MonoBehaviour
     public GameObject bullet;
     public Transform shootPoint;
 
-    private float AttackSpeed;
-    private GameObject CurrentTarget;
+    [Header("Attack")]
+    public float AttackSpeed = 0.1f;
+    public int currentDamage = 1;
+    public int ProjectileSpeed = 10;
 
-    void Start()
-    {
-        AttackSpeed = 0.1f;
-    }
+    private GameObject CurrentTarget;
 
     void Update()
     {
-        targetEnemy();
+        TargetEnemy();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy") && !targets.Contains(other.gameObject))
         {
-            if (!targets.Contains(other.gameObject))
-            {
-                targets.Add(other.gameObject);
-            }
+            targets.Add(other.gameObject);
         }
     }
 
@@ -46,27 +42,27 @@ public class AimScript : MonoBehaviour
         }
     }
 
-    void targetEnemy()
+    void TargetEnemy()
     {
         targets.RemoveAll(target => target == null);
 
-        // No targets
         if (targets.Count == 0)
         {
             CurrentTarget = null;
             return;
         }
+
         float currentLowest = Mathf.Infinity;
         GameObject bestTarget = null;
 
         foreach (GameObject target in targets)
         {
-            TrackFollower trackFollower = target.GetComponent<TrackFollower>();
+            TrackFollower trackFollow = target.GetComponent<TrackFollower>();
 
-            if (trackFollower == null)
+            if (trackFollow == null)
                 continue;
 
-            float inTime = trackFollower.ReturnTime();
+            float inTime = trackFollow.ReturnTime();
 
             if (inTime < currentLowest)
             {
@@ -81,27 +77,60 @@ public class AimScript : MonoBehaviour
             return;
         }
 
-        // Set current target
         CurrentTarget = bestTarget;
 
-        // Aim at target
-        Vector3 aimDir = (CurrentTarget.transform.position - transform.position).normalized;
+        TrackFollower trackFollower =
+            CurrentTarget.GetComponent<TrackFollower>();
 
-        Quaternion rot = Quaternion.LookRotation(Vector3.forward, aimDir);
-        transform.rotation = rot;
+        Rigidbody2D targetRb =
+            CurrentTarget.GetComponent<Rigidbody2D>();
 
-        // Shooting timer
+        Vector2 targetPosition = targetRb.position;
+
+        Vector2 targetVelocity = targetRb.linearVelocity;
+
+        float distance =
+            Vector2.Distance(shootPoint.position, targetPosition);
+
+        float timeToTarget = distance / ProjectileSpeed;
+
+
+        Vector2 futurePosition =
+            targetPosition + targetVelocity * timeToTarget;
+
+
+        Vector2 aimDirection =
+            futurePosition - (Vector2)transform.position;
+
+        float angle =
+            Mathf.Atan2(aimDirection.y, aimDirection.x)
+            * Mathf.Rad2Deg;
+
+        angle -= 90f;
+
+        transform.rotation =
+            Quaternion.Euler(0f, 0f, angle);
+
+
         AttackSpeed -= Time.deltaTime;
 
         if (AttackSpeed <= 0)
         {
             AttackSpeed = 0.1f;
 
-            Instantiate(
+            GameObject obj = Instantiate(
                 bullet,
                 shootPoint.position,
                 transform.rotation
             );
+
+            fireBullet bulletScript =
+                obj.GetComponent<fireBullet>();
+
+            bulletScript.isHoming = true;
+            bulletScript.target = CurrentTarget;
+            bulletScript.damage = currentDamage;
+            bulletScript.speed = ProjectileSpeed;
         }
     }
 }

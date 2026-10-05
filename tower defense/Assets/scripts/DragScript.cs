@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,17 +8,20 @@ public class DragScript : MonoBehaviour
     InputActionMap actionMap;
     private InputAction InputAction;
     private bool dragging = false;
-    public bool placed = false;
+    private bool placed = false;
+    private TrackCollision trackCollision;
+    
 
 
     private void Start()
     {
+        trackCollision = FindFirstObjectByType<TrackCollision>();
         GetComponent<AimScript>().enabled = false;
 
         actionMap = inputActionAsset.FindActionMap("Game");
         InputAction = actionMap.FindAction("Mouse");
         transform.position = Vector3.zero;
-            dragging = true;
+        dragging = true;
     }
 
     private void OnEnable()
@@ -29,13 +33,18 @@ public class DragScript : MonoBehaviour
     {
         inputActionAsset.Disable();
     }
+
+
     void Update()
     {
-        if(InputAction.WasPressedThisFrame())
+        if(InputAction.WasPressedThisFrame() && trackCollision.onTrack == false)
         {
+
             placed = true;
             dragging = false;
+            
         }
+
         if (dragging == true)
         {
             TowerPlacement();
@@ -43,12 +52,13 @@ public class DragScript : MonoBehaviour
 
         if (placed == true)
         {
-            GetComponent<AimScript>().enabled = true;
+            GetComponent<AimScript>().enabled = true;     
         }
     }
 
     private void TowerPlacement()
     {
+        Debug.Log("hellow orld");
         Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mouseScreenPos.x, mouseScreenPos.y, 0f));
         mouseWorldPos.z = 0f; 

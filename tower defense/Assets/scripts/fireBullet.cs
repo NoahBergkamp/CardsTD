@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class fireBullet : MonoBehaviour
 {
-    public float speed = 20f;
+    public float speed;
     public bool shooting;
     private float AttackDuration = 0.333f;
     Rigidbody2D rb;
-
-
+    public GameObject target;
+    public bool isHoming = true;
+    public int damage;
 
     void Start()
     {
@@ -25,18 +26,15 @@ public class fireBullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-
     }
     void shootBullet()
     {
-        
         rb.linearVelocity = transform.up * speed;
 
         AttackDuration -= Time.deltaTime;
         if (AttackDuration < 0 )
         {
             shooting = false;
-        }
+        }   
     }
 }

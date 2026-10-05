@@ -8,12 +8,15 @@ public class TrackFollower : MonoBehaviour
     [SerializeField] private Transform rotate2;
     [SerializeField] private Transform rotate3;
     [SerializeField] private Transform rotate4;
+    [SerializeField] private Transform rotate5;
+    [SerializeField] private Transform rotate6;
+    [SerializeField] private Transform rotate7;
     [SerializeField] private Transform end;
 
 
 
     [Header("Movement")]
-    public float speed = 5f;
+    public float speed = 1f;
     public float speedMult = 5f;
     public float BaseSpeed;
     public float reachDistance = 0.1f;
@@ -36,6 +39,9 @@ public class TrackFollower : MonoBehaviour
         rotate2 = GameObject.Find("RoundManager/rotate2").transform;
         rotate3 = GameObject.Find("RoundManager/rotate3").transform;
         rotate4 = GameObject.Find("RoundManager/rotate4").transform;
+        rotate5 = GameObject.Find("RoundManager/rotate5").transform;
+        rotate6 = GameObject.Find("RoundManager/rotate6").transform;
+        rotate7 = GameObject.Find("RoundManager/rotate7").transform;
         end = GameObject.Find("RoundManager/End").transform;
         
     }
@@ -45,7 +51,7 @@ public class TrackFollower : MonoBehaviour
         
         rb = GetComponent<Rigidbody2D>();
 
-        waypoints = new Transform[] { start, rotate1, rotate2, rotate3, rotate4, end};
+        waypoints = new Transform[] { start, rotate1, rotate2, rotate3, rotate4, rotate5, rotate6, rotate7, end};
 
         transform.position = start.position;
     }

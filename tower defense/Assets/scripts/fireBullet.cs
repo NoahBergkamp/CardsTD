@@ -7,7 +7,6 @@ public class fireBullet : MonoBehaviour
     private float AttackDuration = 0.333f;
     Rigidbody2D rb;
     public GameObject target;
-    public bool isHoming = true;
     public int damage;
 
     void Start()

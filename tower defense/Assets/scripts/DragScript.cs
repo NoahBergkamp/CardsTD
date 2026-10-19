@@ -10,6 +10,7 @@ public class DragScript : MonoBehaviour
     private bool dragging = false;
     private bool placed = false;
     private TrackCollision trackCollision;
+    private Rigidbody2D rb;
     
 
 
@@ -17,6 +18,7 @@ public class DragScript : MonoBehaviour
     {
         trackCollision = FindFirstObjectByType<TrackCollision>();
         GetComponent<AimScript>().enabled = false;
+        rb = GetComponent<Rigidbody2D>();
 
         actionMap = inputActionAsset.FindActionMap("Game");
         InputAction = actionMap.FindAction("Mouse");
@@ -52,13 +54,14 @@ public class DragScript : MonoBehaviour
 
         if (placed == true)
         {
-            GetComponent<AimScript>().enabled = true;     
+            GetComponent<AimScript>().enabled = true;
+            rb.constraints = RigidbodyConstraints2D.FreezePosition;
+             
         }
     }
 
     private void TowerPlacement()
     {
-        Debug.Log("hellow orld");
         Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mouseScreenPos.x, mouseScreenPos.y, 0f));
         mouseWorldPos.z = 0f; 

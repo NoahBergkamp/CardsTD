@@ -127,7 +127,6 @@ public class AimScript : MonoBehaviour
             fireBullet bulletScript =
                 obj.GetComponent<fireBullet>();
 
-            bulletScript.isHoming = true;
             bulletScript.target = CurrentTarget;
             bulletScript.damage = currentDamage;
             bulletScript.speed = ProjectileSpeed;
